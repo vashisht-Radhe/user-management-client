@@ -1,24 +1,41 @@
 import { useState } from "react";
 import { Input, Button } from "../../components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthForm } from "../../hooks/useAuthForm";
 import { loginSchema } from "../../schemas/auth.schema";
+import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
 const Login = () => {
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors, isSubmitting },
-  } = useAuthForm(loginSchema, { mode: "onChange" });
+  } = useAuthForm(loginSchema, {
+    mode: "onChange",
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
   const onSubmit = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    console.log("Login data:", data);
-    reset();
+    try {
+      await login(data);
+      toast.success("Logged in successfully 🎉");
+      navigate("/home");
+      reset();
+    } catch (error) {
+      setError("root", {
+        message: error.message || "Invalid email or password",
+      });
+    }
   };
 
   return (
@@ -32,13 +49,19 @@ const Login = () => {
         </p>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          {errors.root && (
+            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
+              {errors.root.message}
+            </div>
+          )}
+
           <Input
             {...register("email")}
             label="Email"
             type="email"
             placeholder="Enter your email"
             error={errors.email?.message}
-            required
+            isRequired
           />
 
           <div className="relative">
@@ -49,7 +72,7 @@ const Login = () => {
               placeholder="Enter your password"
               error={errors.password?.message}
               className="pr-16"
-              required
+              isRequired
             />
 
             <button

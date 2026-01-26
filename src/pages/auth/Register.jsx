@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { Input, Button } from "../../components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthForm } from "../../hooks/useAuthForm";
 import { registerSchema } from "../../schemas/auth.schema";
+import toast from "react-hot-toast";
+import { useAuth } from "../../context/AuthContext";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const { signup } = useAuth();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -24,8 +28,11 @@ const Register = () => {
   });
 
   const onSubmit = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
+    toast.success("new account created successfully 🎉");
+    signup(data);
+    navigate("/home");
     console.log("Register data:", data);
     reset();
   };

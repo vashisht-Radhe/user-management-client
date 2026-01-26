@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const Input = ({
   label,
   placeholder,
@@ -7,7 +5,7 @@ const Input = ({
   name,
   id,
   error,
-  required = false,
+  isRequired = false, // ✅ UI-only prop
   className = "",
   ...props
 }) => {
@@ -26,7 +24,7 @@ const Input = ({
       {label && (
         <label htmlFor={inputId} className="text-sm font-medium text-gray-800">
           {label}
-          {required && (
+          {isRequired && (
             <span className="text-red-500 ml-0.5" aria-hidden="true">
               *
             </span>
@@ -39,16 +37,15 @@ const Input = ({
         name={name}
         type={type}
         placeholder={placeholder}
-        required={required}
-        aria-required={required}
         className={`
           ${baseStyles}
           ${error ? errorStyles : normalStyles}
           ${className}
         `}
+        aria-required={isRequired} // ✅ accessibility only
         aria-invalid={!!error}
         aria-describedby={error ? `${inputId}-error` : undefined}
-        {...props}
+        {...props} // RHF props
       />
 
       {error && (
