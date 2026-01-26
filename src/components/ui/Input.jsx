@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const Input = ({
   label,
   placeholder,
@@ -5,6 +7,7 @@ const Input = ({
   name,
   id,
   error,
+  required = false,
   className = "",
   ...props
 }) => {
@@ -23,6 +26,11 @@ const Input = ({
       {label && (
         <label htmlFor={inputId} className="text-sm font-medium text-gray-800">
           {label}
+          {required && (
+            <span className="text-red-500 ml-0.5" aria-hidden="true">
+              *
+            </span>
+          )}
         </label>
       )}
 
@@ -31,6 +39,8 @@ const Input = ({
         name={name}
         type={type}
         placeholder={placeholder}
+        required={required}
+        aria-required={required}
         className={`
           ${baseStyles}
           ${error ? errorStyles : normalStyles}

@@ -1,71 +1,33 @@
 import { useState } from "react";
 import { Input, Button } from "../../components";
 import { Link } from "react-router-dom";
+import { useAuthForm } from "../../hooks/useAuthForm";
+import { registerSchema } from "../../schemas/auth.schema";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const newErrors = {};
-
-    if (!form.name) {
-      newErrors.name = "Name is required";
-    }
-
-    if (!form.email) {
-      newErrors.email = "Email is required";
-    }
-
-    if (!form.password) {
-      newErrors.password = "Password is required";
-    }
-
-    if (!form.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password";
-    }
-
-    if (
-      form.password &&
-      form.confirmPassword &&
-      form.password !== form.confirmPassword
-    ) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length > 0) return;
-
-    setIsSubmitting(true);
-
-    // simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    console.log("Register data:", form);
-
-    setIsSubmitting(false);
-
-    setForm({
-      name: "",
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isValid, isSubmitting },
+  } = useAuthForm(registerSchema, {
+    mode: "onChange",
+    defaultValues: {
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       confirmPassword: "",
-    });
+    },
+  });
+
+  const onSubmit = async (data) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    console.log("Register data:", data);
+    reset();
   };
 
   return (
@@ -78,36 +40,42 @@ const Register = () => {
           Sign up to get started
         </p>
 
-        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-          <Input
-            label="Name"
-            name="name"
-            placeholder="Enter your name"
-            value={form.name}
-            onChange={handleChange}
-            error={errors.name}
-          />
+        <form className="mt-6 space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          <div className="md:flex items-center gap-2">
+            <Input
+              {...register("firstName")}
+              label="First Name"
+              placeholder="john"
+              error={errors.firstName?.message}
+              required
+            />
+
+            <Input
+              {...register("lastName")}
+              label="Last Name"
+              placeholder="Doe"
+              error={errors.lastName?.message}
+            />
+          </div>
 
           <Input
+            {...register("email")}
             label="Email"
             type="email"
-            name="email"
-            placeholder="Enter your email"
-            value={form.email}
-            onChange={handleChange}
-            error={errors.email}
+            placeholder="john@example.com"
+            error={errors.email?.message}
+            required
           />
 
           <div className="relative">
             <Input
+              {...register("password")}
               label="Password"
               type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Create a password"
-              value={form.password}
-              onChange={handleChange}
-              error={errors.password}
+              placeholder="••••••••"
+              error={errors.password?.message}
               className="pr-16"
+              required
             />
 
             <button
@@ -120,16 +88,19 @@ const Register = () => {
           </div>
 
           <Input
+            {...register("confirmPassword")}
             label="Confirm Password"
             type={showPassword ? "text" : "password"}
-            name="confirmPassword"
-            placeholder="Confirm your password"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            error={errors.confirmPassword}
+            placeholder="••••••••"
+            error={errors.confirmPassword?.message}
+            required
           />
 
-          <Button disabled={isSubmitting} type="submit" className="w-full">
+          <Button
+            disabled={!isValid || isSubmitting}
+            type="submit"
+            className="w-full"
+          >
             {isSubmitting ? "Creating account..." : "Register"}
           </Button>
 

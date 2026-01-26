@@ -1,50 +1,24 @@
 import { useState } from "react";
 import { Input, Button } from "../../components";
 import { Link } from "react-router-dom";
+import { useAuthForm } from "../../hooks/useAuthForm";
+import { loginSchema } from "../../schemas/auth.schema";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useAuthForm(loginSchema, { mode: "onChange" });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const newErrors = {};
-
-    if (!form.email) {
-      newErrors.email = "Email is required";
-    }
-
-    if (!form.password) {
-      newErrors.password = "Password is required";
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length > 0) return;
-
-    setIsSubmitting(true);
-
+  const onSubmit = async (data) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    console.log("Login data:", form);
-
-    setIsSubmitting(false);
-
-    setForm({
-      email: "",
-      password: "",
-    });
+    console.log("Login data:", data);
+    reset();
   };
 
   return (
@@ -57,27 +31,25 @@ const Login = () => {
           Please login to your account
         </p>
 
-        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+        <form className="mt-6 space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <Input
+            {...register("email")}
             label="Email"
             type="email"
-            name="email"
             placeholder="Enter your email"
-            value={form.email}
-            onChange={handleChange}
-            error={errors.email}
+            error={errors.email?.message}
+            required
           />
 
           <div className="relative">
             <Input
+              {...register("password")}
               label="Password"
               type={showPassword ? "text" : "password"}
-              name="password"
               placeholder="Enter your password"
-              value={form.password}
-              onChange={handleChange}
-              error={errors.password}
+              error={errors.password?.message}
               className="pr-16"
+              required
             />
 
             <button
