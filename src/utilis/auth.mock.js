@@ -6,9 +6,10 @@ export const mockLogin = (data) => {
       } else {
         resolve({
           id: 1,
-          name: "Demo User",
+          name: "Radhe",
           email: data.email,
-          role: "user",
+          role: "admin",
+          status: "Active",
         });
       }
     }, 1000);

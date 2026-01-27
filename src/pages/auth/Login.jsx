@@ -7,7 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 
 const Login = () => {
-  const { login } = useAuth();
+  const { user, login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
@@ -27,10 +27,17 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      await login(data);
+      const loggedInUser = await login(data);
+
       toast.success("Logged in successfully 🎉");
-      navigate("/home");
-      reset();
+
+      if (loggedInUser.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/home");
+      }
+
+      reset(); // ✅ reset only after success
     } catch (error) {
       setError("root", {
         message: error.message || "Invalid email or password",
