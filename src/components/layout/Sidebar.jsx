@@ -2,28 +2,30 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const navItems = [
-  { name: "Dashboard", to: "/admin" },
-  { name: "Users", to: "/users" },
-  { name: "Activity", to: "/activity" },
+  { name: "Dashboard", to: "/admin/dashboard", end: true },
+  { name: "Users", to: "/admin/users" },
+  { name: "Activity", to: "/admin/activity" },
   { name: "Logout", action: "logout" },
 ];
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = ({ isOpen, onClose, isMobile }) => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logout();
-    navigate("/login", { replace: true });
+    navigate("/", { replace: true });
   };
 
   return (
     <>
-      <div
-        onClick={onClose}
-        className={`fixed inset-0 z-40 transition-opacity duration-300
+      {isMobile && (
+        <div
+          onClick={onClose}
+          className={`fixed inset-0 z-40 transition-opacity duration-300
         ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
-      />
+        />
+      )}
       <aside
         className={`fixed top-0 left-0 h-screen w-64 bg-white z-50
         transform transition-transform duration-500 ease-in-out
@@ -54,6 +56,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                 <NavLink
                   key={item.name}
                   to={item.to}
+                  end={item.end}
+                  onClick={() => {
+                    if (isMobile) onClose();
+                  }}
                   className={({ isActive }) =>
                     `w-full text-left px-4 py-2 rounded-lg transition ${isActive ? "bg-blue-500 text-white/90 font-semibold" : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"}`
                   }

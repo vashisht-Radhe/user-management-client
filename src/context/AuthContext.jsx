@@ -1,38 +1,63 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { mockLogin } from "../utilis/auth.mock";
+import * as authService from "../services/auth.service";
+import * as userService from "../services/user.service";
 
 const AuthContext = createContext(null);
-
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+
+  const getProfile = async () => {
+    try {
+      const res = await userService.getProfile();
+      setUser(res.data.data);
+    } catch {
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+  };
+
+  useEffect(() => {
+    getProfile();
   }, []);
 
   const login = async (data) => {
-    setLoading(true);
-    const userData = await mockLogin(data);
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData)); 
-    setLoading(false);
-    return userData;
+    try {
+      const res = await authService.login(data);
+      setUser(res.data.data);
+      return { user: res.data.data };
+    } catch (err) {
+      return {
+        error: err.response?.data?.message || "Login failed",
+      };
+    }
   };
 
-  const logout = () => {
+  const registerUser = async (data) => {
+    try {
+      const res = await authService.register(data);
+      setUser(res.data?.data);
+      return res;
+    } catch (error) {
+      console.error(error);
+      return {
+        error: error.response?.data?.message || "Registration failed",
+      };
+    }
+  };
+
+  const logout = async () => {
+    await authService.logout();
     setUser(null);
-    localStorage.removeItem("user"); 
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{ user, getProfile, loading, registerUser, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

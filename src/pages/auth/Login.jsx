@@ -6,8 +6,10 @@ import { loginSchema } from "../../schemas/auth.schema";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 
+const loginImage = "/login.webp";
+
 const Login = () => {
-  const { user, login } = useAuth();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
@@ -26,28 +28,30 @@ const Login = () => {
   });
 
   const onSubmit = async (data) => {
-    try {
-      const loggedInUser = await login(data);
+    const result = await login(data);
 
-      toast.success("Logged in successfully 🎉");
+    if (result?.error) {
+      toast.error(result.error);
+      return;
+    }
 
-      if (loggedInUser.role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/home");
-      }
+    const loggedInUser = result.user;
 
-      reset(); // ✅ reset only after success
-    } catch (error) {
-      setError("root", {
-        message: error.message || "Invalid email or password",
-      });
+    toast.success("Logged in successfully");
+
+    if (loggedInUser.role === "admin") {
+      navigate("/admin/dashboard", { replace: true });
+    } else {
+      navigate("/dashboard", { replace: true });
     }
   };
 
   return (
     <div className="w-full min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="w-full max-w-md bg-white shadow-md p-8 rounded-xl">
+      <div className="hidden md:block">
+        <img src={loginImage} alt="" />
+      </div>
+      <div className="w-full max-w-md bg-white md:bg-transparent shadow-md md:shadow-none p-8 rounded-xl">
         <h2 className="text-3xl font-bold text-gray-800 text-center">
           Welcome Back 👋
         </h2>
@@ -56,7 +60,7 @@ const Login = () => {
         </p>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit(onSubmit)}>
-          {errors.root && (
+          {errors.root?.message && (
             <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
               {errors.root.message}
             </div>
@@ -89,6 +93,14 @@ const Login = () => {
             >
               {showPassword ? "Hide" : "Show"}
             </button>
+          </div>
+          <div className="text-right">
+            <Link
+              to="/forgot-password"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Forgot password?
+            </Link>
           </div>
 
           <Button disabled={isSubmitting} type="submit" className="w-full">

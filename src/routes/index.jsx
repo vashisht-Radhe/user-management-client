@@ -1,38 +1,55 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
-import NotFound from "../pages/NotFound";
+import Dashboard from "../pages/user/Dashboard";
 
-import AuthRoute from "./AuthRoute";
-import PrivateRoute from "./PrivateRoute";
-import AdminRoute from "./AdminRoute";
-
-import UserLayout from "../components/layout/UserLayout";
-import AdminLayout from "../components/layout/AdminLayout";
-
-import Home from "../pages/Home";
 import AdminDashboard from "../pages/admin/Dashboard";
+import Users from "../pages/admin/Users";
+
+import AdminLayout from "../components/layout/AdminLayout";
+import UserLayout from "../components/layout/UserLayout";
+
+import ActivityPage from "../pages/admin/ActivityPage";
+import ForgotPassword from "../pages/auth/ForgotPassword";
+import ResetPassword from "../pages/auth/ResetPassword";
+import VerifyOtp from "../pages/auth/VerifiyOtp";
+import Home from "../pages/Home";
+import NotFound from "../pages/NotFound";
+import Profile from "../pages/user/Profile";
+import AdminRoute from "./AdminRoute";
+import GuestRoute from "./GuestRoute";
+import UserRoute from "./UserRoute";
+import ChangePassword from "../pages/user/ChangePassword";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route element={<UserLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/profile" element={<Profile />} />
+      </Route>
 
-      <Route element={<AuthRoute />}>
+      <Route element={<GuestRoute />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Route>
 
-      <Route element={<PrivateRoute />}>
+      <Route element={<UserRoute />}>
+        <Route path="/verify-otp" element={<VerifyOtp />} />
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route element={<UserLayout />}>
-          <Route path="home" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
-      </Route>
 
-      <Route element={<AdminRoute />}>
-        <Route element={<AdminLayout />}>
-          <Route path="admin" element={<AdminDashboard />} />
+        <Route path="/admin" element={<AdminRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="users" element={<Users />} />
+            <Route path="activity" element={<ActivityPage />} />
+          </Route>
         </Route>
       </Route>
 

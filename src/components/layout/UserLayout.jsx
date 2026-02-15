@@ -5,7 +5,7 @@ const UserLayout = () => {
   return (
     <>
       <Navbar />
-      <main className="p-6">
+      <main className="h-[calc(100vh-6rem)]">
         <Outlet />
       </main>
     </>

@@ -4,14 +4,20 @@ import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 
 const AdminLayout = () => {
-  const [openSidebar, setOpenSidebar] = useState(false);
+  const isDesktop = window.innerWidth > 768;
+
+  const [isMobile, setIsMobile] = useState(!isDesktop);
+  const [openSidebar, setOpenSidebar] = useState(isDesktop);
 
   useEffect(() => {
     const handleResize = () => {
-      setOpenSidebar(window.innerWidth > 768);
+      const desktop = window.innerWidth > 768;
+
+      setIsMobile(!desktop);
+
+      setOpenSidebar(desktop);
     };
 
-    handleResize();
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
@@ -19,10 +25,15 @@ const AdminLayout = () => {
 
   return (
     <div className="flex w-full h-screen">
-      <Sidebar isOpen={openSidebar} onClose={() => setOpenSidebar(false)} />
+      <Sidebar
+        isMobile={isMobile}
+        isOpen={openSidebar}
+        onClose={() => setOpenSidebar(false)}
+      />
       <main
         className={`flex-1 transition-all duration-300
-        ${openSidebar ? "ml-64" : "ml-0"}`}
+          ${openSidebar && !isMobile ? "ml-64" : "ml-0"}
+        `}
       >
         <Navbar
           openSidebar={openSidebar}

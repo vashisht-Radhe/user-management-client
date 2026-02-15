@@ -6,9 +6,11 @@ import { registerSchema } from "../../schemas/auth.schema";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 
+const loginImage = "/login.webp";
+
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { signup } = useAuth();
+  const { registerUser } = useAuth();
   const navigate = useNavigate();
 
   const {
@@ -28,17 +30,29 @@ const Register = () => {
   });
 
   const onSubmit = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const res = await registerUser(data);
 
-    toast.success("new account created successfully 🎉");
-    signup(data);
-    navigate("/home");
-    console.log("Register data:", data);
+    if (res?.error) {
+      toast.error(res.error);
+      return;
+    }
+
+    toast.success(res.data.message);
+
+    const registeredUser = res.data?.data;
+
+    if (registeredUser) {
+      navigate("/dashboard");
+    }
+
     reset();
   };
 
   return (
     <div className="w-full min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="hidden md:block">
+        <img src={loginImage} alt="" />
+      </div>
       <div className="w-full max-w-md bg-white shadow-md p-8 rounded-xl">
         <h2 className="text-3xl font-bold text-gray-800 text-center">
           Create Account 🚀

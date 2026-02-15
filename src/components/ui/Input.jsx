@@ -5,7 +5,7 @@ const Input = ({
   name,
   id,
   error,
-  isRequired = false, // ✅ UI-only prop
+  isRequired = false, 
   className = "",
   ...props
 }) => {
@@ -42,10 +42,10 @@ const Input = ({
           ${error ? errorStyles : normalStyles}
           ${className}
         `}
-        aria-required={isRequired} // ✅ accessibility only
+        aria-required={isRequired} 
         aria-invalid={!!error}
         aria-describedby={error ? `${inputId}-error` : undefined}
-        {...props} // RHF props
+        {...props}
       />
 
       {error && (
