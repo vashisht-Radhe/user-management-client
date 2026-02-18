@@ -3,16 +3,15 @@ import { useAuth } from "../../context/AuthContext";
 
 const Dashboard = () => {
   const { user } = useAuth();
+  console.log("user", user);
 
   if (!user) return null;
 
   return (
     <div className="w-full mx-auto space-y-6">
-      <div className="bg-white shadow rounded p-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Welcome, {user.firstName} 👋
-        </h1>
-        <p className="text-gray-600 mt-1">Here's your account overview</p>
+      <div className="card shadow-none border-b border-gray-200">
+        <h1 className="heading-2">Welcome, {user.firstName} 👋</h1>
+        <p className="text-body">Here's your account overview</p>
 
         {!user.isVerified && (
           <div className="mt-4 flex items-center justify-between gap-4 rounded-lg border border-yellow-300 bg-yellow-50 p-4">
@@ -36,8 +35,8 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className="bg-white shadow rounded p-6">
-        <h2 className="text-lg font-semibold mb-4">Your Details</h2>
+      <div className="card">
+        <h2 className="heading-2 mb-4">Your Details</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <Detail label="Name" value={user.firstName} />

@@ -24,13 +24,10 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={onSubmit}
-        className="w-full max-w-md bg-white p-6 rounded-xl shadow"
-      >
-        <h2 className="text-2xl font-bold text-center">Forgot Password</h2>
-        <p className="text-sm text-gray-500 text-center mt-1">
+    <div className="auth-layout">
+      <form onSubmit={onSubmit} className="auth-card">
+        <h2 className="auth-title">Forgot Password</h2>
+        <p className="auth-subtitle">
           Enter your email to receive a reset link
         </p>
 
@@ -46,10 +43,10 @@ const ForgotPassword = () => {
 
         <Button type="submit" className="w-full mt-4" disabled={loading}>
           {loading ? "Sending..." : "Send Reset Link"}
-        </Button>   
+        </Button>
 
         <p className="text-sm text-center mt-4">
-          <Link to="/login" className="text-blue-600 hover:underline">
+          <Link to="/login" className="auth-link">
             Back to login
           </Link>
         </p>

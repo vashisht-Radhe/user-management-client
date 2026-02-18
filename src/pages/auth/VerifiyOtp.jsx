@@ -4,8 +4,10 @@ import Timer from "../../utilis/Timer";
 import { Button, Input } from "../../components";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const VerifyOtp = () => {
+  const { getProfile } = useAuth();
   const [otp, setOtp] = useState("");
   const [isTimerActive, setIsTimerActive] = useState(true);
   const [timerKey, setTimerKey] = useState(0);
@@ -24,6 +26,8 @@ const VerifyOtp = () => {
       setLoading(true);
       const res = await verifyOtp(otp);
       toast.success(res.data.message);
+
+      await getProfile();
       navigate("/dashboard");
     } catch (err) {
       toast.error(err.response?.data?.message || "Invalid OTP");
@@ -44,12 +48,12 @@ const VerifyOtp = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg p-8">
+    <div className="auth-layout">
+      <div className="auth-card">
         {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800">Verify OTP</h2>
-          <p className="text-sm text-gray-500 mt-1">
+          <h2 className="auth-title">Verify OTP</h2>
+          <p className="auth-subtitle">
             Enter the 6-digit code sent to your email
           </p>
         </div>
@@ -77,9 +81,7 @@ const VerifyOtp = () => {
               disabled={isTimerActive}
               onClick={handleResendOtp}
               className={`font-medium transition ${
-                isTimerActive
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "text-indigo-600 hover:underline"
+                isTimerActive ? "text-gray-400 cursor-not-allowed" : "auth-link"
               }`}
             >
               Resend OTP

@@ -40,10 +40,10 @@ const AdminDashboard = () => {
         <StatBox label="Deactivated" value={stats.deactivated} color="red" />
       </div>
 
-      <div className="bg-white shadow rounded p-4 space-y-3">
-        <h2 className="font-medium">Quick Actions</h2>
+      <div className="card">
+        <h2 className="text-body">Quick Actions</h2>
 
-        <div className="flex items-center gap-2">
+        <div className="container-align-center gap-2">
           <Button onClick={() => navigate("/admin/users")}>Manage Users</Button>
 
           <Button onClick={() => navigate("/dashboard")}>My Dashboard</Button>
@@ -62,9 +62,9 @@ const StatBox = ({ label, value, color }) => {
   };
 
   return (
-    <div className="bg-white shadow rounded p-4">
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className={`text-2xl font-bold ${colorMap[color] || ""}`}>{value}</p>
+    <div className="card">
+      <p className="text-muted">{label}</p>
+      <p className={`heading-2 ${colorMap[color] || ""}`}>{value}</p>
     </div>
   );
 };

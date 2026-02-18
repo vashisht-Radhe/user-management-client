@@ -4,7 +4,7 @@ const BASE_URL = "/user/me";
 
 export const getProfile = async () => {
   const response = await api.get(BASE_URL);
-  return response.data;
+  return response.data.data;
 };
 
 export const updateProfile = async (data) => {

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  getProfile,
   updateProfile,
   updateProfilePic,
   deactivateAccount,
@@ -10,7 +9,9 @@ import { Button, Input } from "../../components";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import Spinner from "../../components/ui/Spinner";
+import { useAuth } from "../../context/AuthContext";
 
+/* ---------------- Icons ---------------- */
 
 const PencilIcon = () => (
   <svg
@@ -35,13 +36,15 @@ const DefaultAvatar = () => (
   </div>
 );
 
+/* ---------------- Component ---------------- */
 
 const Profile = () => {
+  const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(null);
+  /* Local UI state only */
   const [editing, setEditing] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -49,25 +52,19 @@ const Profile = () => {
 
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [password, setPassword] = useState("");
-
   const [deactivateOpen, setDeactivateOpen] = useState(false);
 
-
+  /* Sync form state from AuthContext user */
   useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await getProfile();
-        setUser(data);
-        setFirstName(data.firstName);
-        setLastName(data.lastName);
-        setAvatarPreview(data.avatar || null);
-      } catch {
-        toast.error("Failed to load profile");
-      }
-    })();
-  }, []);
+    if (user) {
+      setFirstName(user.firstName);
+      setLastName(user.lastName);
+      setAvatarPreview(user.avatar || null);
+    }
+  }, [user]);
 
-  if (!user) {
+  /* Auth loading */
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Spinner />
@@ -75,17 +72,20 @@ const Profile = () => {
     );
   }
 
+  if (!user) return null;
+
+  /* ---------------- Handlers ---------------- */
+
   const handleSave = async () => {
     try {
-      setLoading(true);
-      const { data } = await updateProfile({ firstName, lastName });
-      setUser(data);
-      setEditing(false);
+      setSaving(true);
+      await updateProfile({ firstName, lastName });
       toast.success("Profile updated");
+      setEditing(false);
     } catch {
       toast.error("Failed to update profile");
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -94,23 +94,23 @@ const Profile = () => {
     if (!file) return;
 
     try {
-      setLoading(true);
+      setSaving(true);
       setAvatarPreview(URL.createObjectURL(file));
-      const { data } = await updateProfilePic(file);
-      setUser(data);
-      setAvatarPreview(data.avatar);
+      const updatedUser = await updateProfilePic(file);
+      setAvatarPreview(updatedUser.avatar);
       toast.success("Avatar updated");
     } catch {
       toast.error("Failed to update avatar");
       setAvatarPreview(user.avatar);
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
   const handleDeactivate = async () => {
     try {
       await deactivateAccount();
+      logout(null);
       toast.success("Account deactivated");
       navigate("/", { replace: true });
     } catch {
@@ -125,21 +125,23 @@ const Profile = () => {
     }
 
     try {
-      setLoading(true);
+      setSaving(true);
       await deleteAccount({ password });
       toast.success("Account permanently deleted");
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
     } catch {
       toast.error("Failed to delete account");
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
+  /* ---------------- UI (UNCHANGED) ---------------- */
+
   return (
-    <div className="min-h-screen bg-gray-50 flex justify-center px-4 py-10">
-      <div className="w-full max-w-lg space-y-8">
-        <div className="bg-white rounded-3xl shadow p-8 text-center">
+    <div className="page page-muted py-10">
+      <div className="content-narrow space-y-8">
+        <div className="card text-center rounded-3xl">
           <div className="relative mx-auto w-fit">
             {avatarPreview ? (
               <img
@@ -188,7 +190,7 @@ const Profile = () => {
               />
 
               <div className="flex gap-2">
-                <Button onClick={handleSave} disabled={loading}>
+                <Button onClick={handleSave} disabled={saving}>
                   Save
                 </Button>
                 <Button variant="secondary" onClick={() => setEditing(false)}>
@@ -228,7 +230,6 @@ const Profile = () => {
             Deactivate account (you can reactivate later)
           </Button>
         </div>
-
         {deactivateOpen && (
           <div
             className="fixed inset-0 bg-black/30 flex items-center justify-center z-50"
@@ -288,51 +289,53 @@ const Profile = () => {
             Permanently delete account
           </Button>
         </div>
-      </div>
-
-      {deleteOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-          onClick={() => setDeleteOpen(false)}
-        >
+        {deleteOpen && (
           <div
-            className="bg-white rounded-2xl p-6 w-full max-w-md"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+            onClick={() => setDeleteOpen(false)}
           >
-            <h2 className="text-lg font-semibold text-gray-900">
-              ⚠️ Permanently delete account
-            </h2>
+            <div
+              className="bg-white rounded-2xl p-6 w-full max-w-md"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-lg font-semibold text-gray-900">
+                ⚠️ Permanently delete account
+              </h2>
 
-            <p className="text-sm text-gray-600 mt-2">
-              This action cannot be undone. All your data will be permanently
-              removed.
-            </p>
+              <p className="text-sm text-gray-600 mt-2">
+                This action cannot be undone. All your data will be permanently
+                removed.
+              </p>
 
-            <div className="mt-4">
-              <Input
-                label="Confirm password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+              <div className="mt-4">
+                <Input
+                  label="Confirm password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
 
-            <div className="flex gap-3 mt-6">
-              <Button
-                className="bg-red-600 text-white hover:bg-red-700"
-                disabled={!password || loading}
-                onClick={handleDelete}
-              >
-                Delete permanently
-              </Button>
+              <div className="flex gap-3 mt-6">
+                <Button
+                  className="bg-red-600 text-white hover:bg-red-700"
+                  disabled={!password || loading}
+                  onClick={handleDelete}
+                >
+                  Delete permanently
+                </Button>
 
-              <Button variant="secondary" onClick={() => setDeleteOpen(false)}>
-                Cancel
-              </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => setDeleteOpen(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

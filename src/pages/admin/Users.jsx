@@ -74,10 +74,8 @@ const Users = () => {
   return (
     <div className="p-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800">Manage Users</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          View and manage registered users
-        </p>
+        <h1 className="heading-2">Manage Users</h1>
+        <p className="text-small">View and manage registered users</p>
       </div>
 
       <div className="overflow-x-auto bg-white rounded-2xl shadow-lg">

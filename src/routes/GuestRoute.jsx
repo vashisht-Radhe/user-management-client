@@ -4,8 +4,8 @@ import Spinner from "../components/ui/Spinner";
 
 const GuestRoute = () => {
   const { user, loading } = useAuth();
-  console.log("user", user);
-  console.log("loading", loading);
+  console.log("Guest", user);
+  console.log("Guest loading", loading);
 
   if (loading) return <Spinner />;
 

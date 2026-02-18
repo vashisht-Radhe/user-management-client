@@ -6,6 +6,7 @@ const App = () => {
     <>
       <Toaster position="top-right" reverseOrder={false} />
       <AppRoutes />
+      {/* <Tests /> */}
     </>
   );
 };

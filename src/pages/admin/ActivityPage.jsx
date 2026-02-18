@@ -3,7 +3,7 @@ import { fakeActivities } from "../../data/fakeActivities";
 const ActivityPage = () => {
   return (
     <div className="p-8">
-      <h1 className="text-xl font-semibold mb-4">System Activity</h1>
+      <h1 className="heading-2 mb-4">System Activity</h1>
 
       <div className="overflow-x-auto bg-white shadow rounded">
         <table className="w-full border-collapse">

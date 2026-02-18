@@ -16,19 +16,16 @@ import ResetPassword from "../pages/auth/ResetPassword";
 import VerifyOtp from "../pages/auth/VerifiyOtp";
 import Home from "../pages/Home";
 import NotFound from "../pages/NotFound";
+import ChangePassword from "../pages/user/ChangePassword";
 import Profile from "../pages/user/Profile";
 import AdminRoute from "./AdminRoute";
 import GuestRoute from "./GuestRoute";
 import UserRoute from "./UserRoute";
-import ChangePassword from "../pages/user/ChangePassword";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route element={<UserLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
-      </Route>
+      <Route path="/" element={<Home />} />
 
       <Route element={<GuestRoute />}>
         <Route path="/login" element={<Login />} />
@@ -40,16 +37,18 @@ const AppRoutes = () => {
       <Route element={<UserRoute />}>
         <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/change-password" element={<ChangePassword />} />
+
         <Route element={<UserLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
+      </Route>
 
-        <Route path="/admin" element={<AdminRoute />}>
-          <Route element={<AdminLayout />}>
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="users" element={<Users />} />
-            <Route path="activity" element={<ActivityPage />} />
-          </Route>
+      <Route element={<AdminRoute />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="users" element={<Users />} />
+          <Route path="activity" element={<ActivityPage />} />
         </Route>
       </Route>
 

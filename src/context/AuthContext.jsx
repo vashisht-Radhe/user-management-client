@@ -9,11 +9,15 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  console.log("AuthContext user", user);
+  console.log("AuthContext loading", loading);
+
   const getProfile = async () => {
     try {
-      const res = await userService.getProfile();
-      setUser(res.data.data);
-    } catch {
+      const user = await userService.getProfile();
+      setUser(user);
+    } catch (err) {
+      // console.error("PROFILE FAILED:", err.response?.status);
       setUser(null);
     } finally {
       setLoading(false);
@@ -50,7 +54,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await authService.logout();
+    try {
+      await authService.logout(); 
+    } catch {}
     setUser(null);
   };
 

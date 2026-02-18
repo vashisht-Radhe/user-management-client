@@ -47,23 +47,17 @@ const Login = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gray-100 flex items-center justify-center">
+    <div className="auth-layout">
       <div className="hidden md:block">
         <img src={loginImage} alt="" />
       </div>
-      <div className="w-full max-w-md bg-white md:bg-transparent shadow-md md:shadow-none p-8 rounded-xl">
-        <h2 className="text-3xl font-bold text-gray-800 text-center">
-          Welcome Back 👋
-        </h2>
-        <p className="text-sm text-gray-500 text-center mt-1">
-          Please login to your account
-        </p>
+      <div className="auth-card">
+        <h2 className="auth-title">Welcome Back 👋</h2>
+        <p className="auth-subtitle">Please login to your account</p>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit(onSubmit)}>
           {errors.root?.message && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-              {errors.root.message}
-            </div>
+            <div className="alert alert-error">{errors.root.message}</div>
           )}
 
           <Input
@@ -89,16 +83,13 @@ const Login = () => {
             <button
               type="button"
               onClick={() => setShowPassword((p) => !p)}
-              className="absolute right-3 top-9 text-sm text-blue-600 hover:underline"
+              className="absolute right-3 top-9 auth-link"
             >
               {showPassword ? "Hide" : "Show"}
             </button>
           </div>
           <div className="text-right">
-            <Link
-              to="/forgot-password"
-              className="text-sm text-blue-600 hover:underline"
-            >
+            <Link to="/forgot-password" className="auth-link">
               Forgot password?
             </Link>
           </div>
@@ -107,18 +98,15 @@ const Login = () => {
             {isSubmitting ? "Logging in..." : "Login"}
           </Button>
 
-          <div className="flex items-center gap-4">
-            <div className="h-px w-full bg-gray-200" />
-            <span className="text-sm text-gray-400">or</span>
-            <div className="h-px w-full bg-gray-200" />
+          <div className="auth-divider">
+            <div className="auth-divider-line" />
+            <span className="auth-divider-text">or</span>
+            <div className="auth-divider-line" />
           </div>
 
           <p className="text-center text-sm text-gray-600">
             Don&apos;t have an account?{" "}
-            <Link
-              to="/register"
-              className="font-medium text-blue-600 hover:underline"
-            >
+            <Link to="/register" className="auth-link">
               Register
             </Link>
           </p>

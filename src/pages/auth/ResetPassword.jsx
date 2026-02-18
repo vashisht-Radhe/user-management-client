@@ -33,12 +33,9 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={onSubmit}
-        className="max-w-md w-full bg-white p-6 rounded-xl shadow"
-      >
-        <h2 className="text-2xl font-bold text-center">Reset Password</h2>
+    <div className="auth-layout">
+      <form onSubmit={onSubmit} className="auth-card">
+        <h2 className="auth-title">Reset Password</h2>
 
         <Input
           label="New Password"
@@ -61,7 +58,7 @@ const ResetPassword = () => {
         </Button>
 
         <p className="text-sm text-center mt-4">
-          <Link to="/login" className="text-blue-600 hover:underline">
+          <Link to="/login" className="auth-link">
             Back to login
           </Link>
         </p>

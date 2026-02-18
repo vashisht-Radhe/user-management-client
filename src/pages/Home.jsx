@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Home = () => {
+
   return (
-    <div className="h-[calc(100vh-5rem)] flex items-center justify-center bg-gray-50 px-4 py-12">
-      <div className="max-w-xl text-center space-y-8 flex flex-col items-center">
+    <div className="page section">
+      <div className="content-narrow center-text space-y-8 container-col-center">
         <div className="flex justify-center mb-6">
           <svg
             width="200"
@@ -38,18 +39,13 @@ const Home = () => {
           </svg>
         </div>
 
-        <h1 className="text-4xl font-extrabold text-gray-900 leading-tight">
-          Hey Developer 👋
-        </h1>
+        <h1 className="heading-1">Hey Developer 👋</h1>
 
-        <p className="mt-3 text-lg text-gray-500 leading-relaxed">
+        <p className="text-body">
           Welcome to our awesome app! Let's get started.
         </p>
 
-        <Link
-          to="/login"
-          className="inline-flex items-center justify-center mt-8 px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
+        <Link to="/login" className="btn-cta mt-8">
           Get Started
           <span className="ml-2 text-xl">→</span>
         </Link>
