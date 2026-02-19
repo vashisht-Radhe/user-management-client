@@ -4,8 +4,6 @@ import Spinner from "../components/ui/Spinner";
 
 const AdminRoute = () => {
   const { user, loading } = useAuth();
-  console.log("Admin user", user);
-  console.log("Admin loading", loading);
   
   if (loading) return <Spinner />;
 

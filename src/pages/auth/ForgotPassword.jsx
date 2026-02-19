@@ -13,10 +13,9 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      await forgotPassword(email);
+      await forgotPassword(email.trim());
       toast.success("If this email exists, a reset link has been sent");
     } catch (err) {
-      console.log("error", err.message);
       toast.success("If this email exists, a reset link has been sent");
     } finally {
       setLoading(false);
@@ -26,7 +25,7 @@ const ForgotPassword = () => {
   return (
     <div className="auth-layout">
       <form onSubmit={onSubmit} className="auth-card">
-        <h2 className="auth-title">Forgot Password</h2>
+        <h1 className="auth-title">Forgot Password</h1>
         <p className="auth-subtitle">
           Enter your email to receive a reset link
         </p>
@@ -38,6 +37,7 @@ const ForgotPassword = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            autoComplete="email"
           />
         </div>
 

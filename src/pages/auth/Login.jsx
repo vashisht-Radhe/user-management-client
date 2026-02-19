@@ -16,8 +16,6 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    reset,
-    setError,
     formState: { errors, isSubmitting },
   } = useAuthForm(loginSchema, {
     mode: "onChange",
@@ -39,23 +37,31 @@ const Login = () => {
 
     toast.success("Logged in successfully");
 
-    if (loggedInUser.role === "admin") {
-      navigate("/admin/dashboard", { replace: true });
-    } else {
-      navigate("/dashboard", { replace: true });
-    }
+    const redirectPath =
+      loggedInUser.role === "admin" ? "/admin/dashboard" : "/dashboard";
+
+    navigate(redirectPath, { replace: true });
   };
 
   return (
     <div className="auth-layout">
       <div className="hidden md:block">
-        <img src={loginImage} alt="" />
+        <img
+          src={loginImage}
+          loading="lazy"
+          alt="Login illustratione"
+          className="h-full w-full object-cover"
+        />
       </div>
       <div className="auth-card">
-        <h2 className="auth-title">Welcome Back 👋</h2>
+        <h1 className="auth-title">Welcome Back 👋</h1>
         <p className="auth-subtitle">Please login to your account</p>
 
-        <form className="mt-6 space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className="mt-6 space-y-4"
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+        >
           {errors.root?.message && (
             <div className="alert alert-error">{errors.root.message}</div>
           )}
@@ -67,6 +73,7 @@ const Login = () => {
             placeholder="Enter your email"
             error={errors.email?.message}
             isRequired
+            autoComplete="email"
           />
 
           <div className="relative">
@@ -78,12 +85,14 @@ const Login = () => {
               error={errors.password?.message}
               className="pr-16"
               isRequired
+              autoComplete="current-password"
             />
 
             <button
               type="button"
               onClick={() => setShowPassword((p) => !p)}
               className="absolute right-3 top-9 auth-link"
+              aria-label="Toggle password visibility"
             >
               {showPassword ? "Hide" : "Show"}
             </button>

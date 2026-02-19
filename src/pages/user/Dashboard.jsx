@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import Spinner from "../../components/ui/Spinner";
 
 const Dashboard = () => {
   const { user } = useAuth();
-  console.log("user", user);
 
-  if (!user) return null;
+  if (!user) return <Spinner />;
 
   return (
     <div className="w-full mx-auto space-y-6">

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import * as authService from "../services/auth.service";
 import * as userService from "../services/user.service";
 
@@ -8,9 +8,6 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  console.log("AuthContext user", user);
-  console.log("AuthContext loading", loading);
 
   const getProfile = async () => {
     try {
@@ -55,16 +52,22 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await authService.logout(); 
+      await authService.logout();
     } catch {}
     setUser(null);
   };
 
-  return (
-    <AuthContext.Provider
-      value={{ user, getProfile, loading, registerUser, login, logout }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      getProfile,
+      loading,
+      registerUser,
+      login,
+      logout,
+    }),
+    [user, loading],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

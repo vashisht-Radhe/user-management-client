@@ -4,9 +4,6 @@ import Spinner from "../components/ui/Spinner";
 
 const UserRoute = () => {
   const { user, loading } = useAuth();
-  console.log("user", user);
-  console.log("user loading", loading);
-
   if (loading) return <Spinner />;
 
   if (!user) {

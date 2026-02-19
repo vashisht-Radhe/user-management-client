@@ -17,7 +17,9 @@ const Users = () => {
     setLoading(true);
     try {
       const res = await getAllUsers();
-      setUsers(res.data.data);
+      setUsers(res?.data?.data);
+    } catch (err) {
+      toast.error("Failed to fetch users");
     } finally {
       setLoading(false);
     }
@@ -27,11 +29,20 @@ const Users = () => {
     fetchUsers();
   }, []);
 
+  const refreshUsers = async () => {
+    try {
+      const res = await getAllUsers();
+      setUsers(res?.data?.data || []);
+    } catch {
+      toast.error("Failed to refresh users");
+    }
+  };
+
   const handleRoleChange = async (id, role) => {
     try {
       await updateUserRole(id, role);
       toast.success("User role updated successfully");
-      fetchUsers();
+      await refreshUsers();
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to update role");
     }
@@ -46,7 +57,7 @@ const Users = () => {
         await activateUser(user._id);
         toast.success("User activated successfully");
       }
-      fetchUsers();
+      await refreshUsers();
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Failed to update user status",
@@ -55,13 +66,13 @@ const Users = () => {
   };
 
   const handleDelete = async (id) => {
-    const ok = confirm("Are you sure you want to delete this user?");
+    const ok = window.confirm("Are you sure you want to delete this user?");
     if (!ok) return;
 
     try {
       await deleteUser(id);
       toast.success("User deleted successfully");
-      fetchUsers();
+      await refreshUsers();
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to delete user");
     }
@@ -95,7 +106,7 @@ const Users = () => {
             {users.map((user) => (
               <tr
                 key={user?._id}
-                className="border-t border-t-gray-700 hover:bg-gray-50 transition"
+                className="border-t border-t-gray-200 hover:bg-gray-50 transition"
               >
                 <Td>{user?.email}</Td>
 

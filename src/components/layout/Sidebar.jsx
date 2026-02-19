@@ -36,6 +36,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-800 text-xl transition"
+            aria-label="Close sidebar"
           >
             ✕
           </button>
@@ -48,7 +49,7 @@ const Sidebar = ({ isOpen, onClose, isMobile }) => {
                 <button
                   key={item.name}
                   onClick={handleLogout}
-                  className="w-full text-left px-3 py-2 hover:bg-gray-100 text-gray-700 hover:bg-gray-100"
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 text-gray-700"
                 >
                   {item.name}
                 </button>

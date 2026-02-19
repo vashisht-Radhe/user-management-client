@@ -6,11 +6,13 @@ const Navbar = ({ onMenuClick, openSidebar }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [openProfile, setOpenProfile] = useState(false);
-  const dropdownRef = useRef();
+  const dropdownRef = useRef(null);
 
   const isAdmin = user?.role === "admin";
 
   useEffect(() => {
+    if (!openProfile) return;
+
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setOpenProfile(false);
@@ -18,9 +20,14 @@ const Navbar = ({ onMenuClick, openSidebar }) => {
     }
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [openProfile]);
+
+  const handleLogoClick = () => {
+    if (!user) navigate("/");
+    else if (isAdmin) navigate("/admin/dashboard");
+    else navigate("/dashboard");
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -42,16 +49,12 @@ const Navbar = ({ onMenuClick, openSidebar }) => {
               ☰
             </button>
           )}
-          <h2
-            onClick={() => {
-              if (!user) navigate("/");
-              else if (isAdmin) navigate("/admin/dashboard");
-              else navigate("/dashboard");
-            }}
+          <button
+            onClick={handleLogoClick}
             className="text-xl font-bold text-gray-800 cursor-pointer hover:text-indigo-600 transition"
           >
             Auth
-          </h2>
+          </button>
 
           {isAdmin && !onMenuClick && (
             <button
@@ -72,7 +75,7 @@ const Navbar = ({ onMenuClick, openSidebar }) => {
               >
                 Profile
               </Link>
-              
+
               <div ref={dropdownRef} className="relative">
                 <button
                   onClick={() => setOpenProfile((p) => !p)}

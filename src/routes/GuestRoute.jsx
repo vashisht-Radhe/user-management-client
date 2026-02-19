@@ -4,16 +4,14 @@ import Spinner from "../components/ui/Spinner";
 
 const GuestRoute = () => {
   const { user, loading } = useAuth();
-  console.log("Guest", user);
-  console.log("Guest loading", loading);
 
   if (loading) return <Spinner />;
 
   if (user) {
-    if (user.role === "admin") {
-      return <Navigate to="/admin/dashboard" replace />;
-    }
-    return <Navigate to="/dashboard" replace />;
+    const redirectPath =
+      user.role === "admin" ? "/admin/dashboard" : "/dashboard";
+
+    return <Navigate to={redirectPath} replace />;
   }
 
   return <Outlet />;

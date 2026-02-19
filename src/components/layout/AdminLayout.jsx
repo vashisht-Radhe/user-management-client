@@ -4,10 +4,9 @@ import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 
 const AdminLayout = () => {
-  const isDesktop = window.innerWidth > 768;
 
-  const [isMobile, setIsMobile] = useState(!isDesktop);
-  const [openSidebar, setOpenSidebar] = useState(isDesktop);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
+  const [openSidebar, setOpenSidebar] = useState(() => window.innerWidth > 768);
 
   useEffect(() => {
     const handleResize = () => {
@@ -19,6 +18,8 @@ const AdminLayout = () => {
     };
 
     window.addEventListener("resize", handleResize);
+
+    handleResize();
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);

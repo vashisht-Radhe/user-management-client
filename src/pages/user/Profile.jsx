@@ -110,7 +110,7 @@ const Profile = () => {
   const handleDeactivate = async () => {
     try {
       await deactivateAccount();
-      logout(null);
+      await logout();
       toast.success("Account deactivated");
       navigate("/", { replace: true });
     } catch {
@@ -127,6 +127,7 @@ const Profile = () => {
     try {
       setSaving(true);
       await deleteAccount({ password });
+      await logout();
       toast.success("Account permanently deleted");
       navigate("/", { replace: true });
     } catch {

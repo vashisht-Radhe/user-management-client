@@ -28,7 +28,7 @@ const ChangePassword = () => {
     },
   });
 
-  const isAdmin = user.role === "admin";
+  const isAdmin = user?.role === "admin";
 
   const onSubmit = async (formData) => {
     try {

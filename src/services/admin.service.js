@@ -23,3 +23,7 @@ export const activateUser = (userId) => {
 };
 
 export const deleteUser = (id) => api.delete(`${BASE_URL}/${id}`);
+
+export const getActivities = () => {
+  return api.get(`${BASE_URL}/activity`);
+};

@@ -17,18 +17,18 @@ const VerifyOtp = () => {
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
 
-    if (!otp) {
+    if (!otp.trim()) {
       toast.error("Enter OTP");
       return;
     }
 
     try {
       setLoading(true);
-      const res = await verifyOtp(otp);
+      const res = await verifyOtp(otp.trim());
       toast.success(res.data.message);
 
       await getProfile();
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (err) {
       toast.error(err.response?.data?.message || "Invalid OTP");
     } finally {
@@ -52,7 +52,7 @@ const VerifyOtp = () => {
       <div className="auth-card">
         {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="auth-title">Verify OTP</h2>
+          <h1 className="auth-title">Verify OTP</h1>
           <p className="auth-subtitle">
             Enter the 6-digit code sent to your email
           </p>
@@ -65,6 +65,8 @@ const VerifyOtp = () => {
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
             className="text-center tracking-widest text-lg"
+            inputMode="numeric"
+            autoComplete="one-time-code"
           />
 
           <Button type="submit" disabled={loading} className="w-full">
@@ -74,10 +76,11 @@ const VerifyOtp = () => {
 
         {/* Resend */}
         <div className="mt-6 text-sm text-gray-600 text-center">
-          <p className="mb-2">Didn’t receive the code?</p>
+          <p className="mb-2">Didn't receive the code?</p>
 
           <div className="flex items-center justify-center gap-2">
             <button
+              type="button"
               disabled={isTimerActive}
               onClick={handleResendOtp}
               className={`font-medium transition ${

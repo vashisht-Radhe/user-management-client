@@ -18,7 +18,8 @@ const ResetPassword = () => {
     e.preventDefault();
 
     if (!token) return toast.error("Invalid reset link");
-    if (password !== confirm) return toast.error("Passwords do not match");
+    if (password.trim() !== confirm.trim())
+      return toast.error("Passwords do not match");
 
     try {
       setLoading(true);
@@ -43,6 +44,7 @@ const ResetPassword = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          autoComplete="new-password"
         />
 
         <Input
@@ -51,6 +53,7 @@ const ResetPassword = () => {
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
           required
+          autoComplete="new-password"
         />
 
         <Button type="submit" className="w-full mt-4" disabled={loading}>

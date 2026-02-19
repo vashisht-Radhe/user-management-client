@@ -42,7 +42,7 @@ const Register = () => {
     const registeredUser = res.data?.data;
 
     if (registeredUser) {
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     }
 
     reset();
@@ -51,13 +51,17 @@ const Register = () => {
   return (
     <div className="auth-layout">
       <div className="hidden md:block">
-        <img src={loginImage} alt="" />
+        <img src={loginImage} loading="lazy" alt="Registration illustration" />
       </div>
       <div className="auth-card mt-5">
-        <h2 className="auth-title">Create Account 🚀</h2>
+        <h1 className="auth-title">Create Account 🚀</h1>
         <p className="auth-subtitle">Sign up to get started</p>
 
-        <form className="mt-6 space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className="mt-6 space-y-4"
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+        >
           <div className="md:flex items-center gap-2">
             <Input
               {...register("firstName")}
@@ -65,6 +69,7 @@ const Register = () => {
               placeholder="john"
               error={errors.firstName?.message}
               required
+              autoComplete="given-name"
             />
 
             <Input
@@ -72,6 +77,7 @@ const Register = () => {
               label="Last Name"
               placeholder="Doe"
               error={errors.lastName?.message}
+              autoComplete="family-name"
             />
           </div>
 
@@ -82,6 +88,7 @@ const Register = () => {
             placeholder="john@example.com"
             error={errors.email?.message}
             required
+            autoComplete="email"
           />
 
           <div className="relative">
@@ -93,12 +100,14 @@ const Register = () => {
               error={errors.password?.message}
               className="pr-16"
               required
+              autoComplete="new-password"
             />
 
             <button
               type="button"
               onClick={() => setShowPassword((p) => !p)}
               className="absolute right-3 top-9 auth-link"
+              aria-label="Toggle password visibility"
             >
               {showPassword ? "Hide" : "Show"}
             </button>
@@ -111,6 +120,7 @@ const Register = () => {
             placeholder="••••••••"
             error={errors.confirmPassword?.message}
             required
+            autoComplete="new-password"
           />
 
           <Button

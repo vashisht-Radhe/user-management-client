@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components";
 import { getAllUsers } from "../../services/admin.service";
+import Spinner from "../../components/ui/Spinner";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -11,11 +12,19 @@ const AdminDashboard = () => {
     deactivated: 0,
   });
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
+    let isMounted = true;
+
     const fetchStats = async () => {
       try {
+        setLoading(true);
+
         const res = await getAllUsers();
-        const users = res.data.data;
+        const users = res?.data?.data || [];
+
+        if (!isMounted) return;
 
         setStats({
           total: users.length,
@@ -24,22 +33,33 @@ const AdminDashboard = () => {
         });
       } catch (error) {
         console.error("Failed to fetch stats:", error);
+      } finally {
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchStats();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
     <div className="space-y-6 p-8">
       <h1 className="text-xl font-semibold">Admin Dashboard</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {loading ? (
+        <Spinner />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <StatBox label="Total Users" value={stats.total} />
         <StatBox label="Active Users" value={stats.active} color="green" />
         <StatBox label="Deactivated" value={stats.deactivated} color="red" />
       </div>
-
+      )
+    }
+    
       <div className="card">
         <h2 className="text-body">Quick Actions</h2>
 
