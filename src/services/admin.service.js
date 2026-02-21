@@ -24,6 +24,6 @@ export const activateUser = (userId) => {
 
 export const deleteUser = (id) => api.delete(`${BASE_URL}/${id}`);
 
-export const getActivities = () => {
-  return api.get(`${BASE_URL}/activity`);
+export const getActivities = (page = 1, limit = 10) => {
+  return api.get(`${BASE_URL}/activities?page=${page}&limit=${limit}`);
 };

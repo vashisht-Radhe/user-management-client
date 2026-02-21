@@ -3,8 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components";
 import { getAllUsers } from "../../services/admin.service";
 import Spinner from "../../components/ui/Spinner";
+import usePageTitle from "../../utilis/usePageTitle";
+import { useAuth } from "../../context/AuthContext";
 
 const AdminDashboard = () => {
+  usePageTitle("Admin Dashboard | User Management");
+
+  const { user } = useAuth();
+
+  if (!user) return <Spinner />;
+
   const navigate = useNavigate();
   const [stats, setStats] = useState({
     total: 0,
@@ -53,13 +61,12 @@ const AdminDashboard = () => {
         <Spinner />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatBox label="Total Users" value={stats.total} />
-        <StatBox label="Active Users" value={stats.active} color="green" />
-        <StatBox label="Deactivated" value={stats.deactivated} color="red" />
-      </div>
-      )
-    }
-    
+          <StatBox label="Total Users" value={stats.total} />
+          <StatBox label="Active Users" value={stats.active} color="green" />
+          <StatBox label="Deactivated" value={stats.deactivated} color="red" />
+        </div>
+      )}
+
       <div className="card">
         <h2 className="text-body">Quick Actions</h2>
 

@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { Suspense, lazy } from "react";
 
-// Lazy pages
 const Login = lazy(() => import("../pages/auth/Login"));
 const Register = lazy(() => import("../pages/auth/Register"));
 const Dashboard = lazy(() => import("../pages/user/Dashboard"));
@@ -16,18 +15,23 @@ const NotFound = lazy(() => import("../pages/NotFound"));
 const ChangePassword = lazy(() => import("../pages/user/ChangePassword"));
 const Profile = lazy(() => import("../pages/user/Profile"));
 
-// Layouts (can also be lazy if heavy)
 import AdminLayout from "../components/layout/AdminLayout";
 import UserLayout from "../components/layout/UserLayout";
 
-// Guards
 import AdminRoute from "./AdminRoute";
 import GuestRoute from "./GuestRoute";
 import UserRoute from "./UserRoute";
+import Spinner from "../components/ui/Spinner";
 
 const AppRoutes = () => {
   return (
-    <Suspense fallback={<div className="page-loader">Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="page-loader">
+          <Spinner />
+        </div>
+      }
+    >
       <Routes>
         <Route path="/" element={<Home />} />
 

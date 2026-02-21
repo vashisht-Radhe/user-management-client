@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import Spinner from "../../components/ui/Spinner";
 import { useAuth } from "../../context/AuthContext";
+import usePageTitle from "../../utilis/usePageTitle";
 
 /* ---------------- Icons ---------------- */
 
@@ -39,6 +40,7 @@ const DefaultAvatar = () => (
 /* ---------------- Component ---------------- */
 
 const Profile = () => {
+  usePageTitle("Profile | User Management");
   const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
 

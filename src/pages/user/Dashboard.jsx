@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Spinner from "../../components/ui/Spinner";
+import usePageTitle from "../../utilis/usePageTitle";
 
 const Dashboard = () => {
+  usePageTitle("User Dashboard | User Management");
   const { user } = useAuth();
 
   if (!user) return <Spinner />;

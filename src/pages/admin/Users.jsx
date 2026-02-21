@@ -1,15 +1,24 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Button } from "../../components";
+import Spinner from "../../components/ui/Spinner";
+import { useAuth } from "../../context/AuthContext";
 import {
+  activateUser,
+  deactivateUser,
+  deleteUser,
   getAllUsers,
   updateUserRole,
-  deactivateUser,
-  activateUser,
-  deleteUser,
 } from "../../services/admin.service";
-import { Button } from "../../components";
+import usePageTitle from "../../utilis/usePageTitle";
 
 const Users = () => {
+  usePageTitle("Users | User Management");
+
+  const { user } = useAuth();
+
+  if (!user) return <Spinner />;
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
 

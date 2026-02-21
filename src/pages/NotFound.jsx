@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import usePageTitle from "../utilis/usePageTitle";
 
 export default function NotFound() {
+  usePageTitle("Page not found | User Management");
   return (
     <div className="relative min-h-screen bg-slate-950 text-white flex items-center justify-center overflow-hidden">
       <svg

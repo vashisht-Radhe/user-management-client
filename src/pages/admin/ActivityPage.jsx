@@ -1,37 +1,42 @@
 import { useEffect, useState } from "react";
 import { getActivities } from "../../services/admin.service";
+import Button from "../../components/ui/Button";
+import Spinner from "../../components/ui/Spinner";
+import { useAuth } from "../../context/AuthContext";
+import usePageTitle from "../../utilis/usePageTitle";
 
 const ActivityPage = () => {
+  usePageTitle("Activites | User Management");
+
+  const { user } = useAuth();
+
+  if (!user) return <Spinner />;
+
   const [activities, setActivities] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
-    let isMounted = true;
-
     const fetchActivities = async () => {
       try {
         setLoading(true);
 
-        const res = await getActivities();
-
-        if (!isMounted) return;
+        const res = await getActivities(currentPage, rowsPerPage);
 
         setActivities(res?.data?.activities || []);
         setTotal(res?.data?.total || 0);
+        setTotalPages(res?.data?.totalPages || 1);
       } catch (error) {
         console.error("Failed to fetch activities", error);
       } finally {
-        if (isMounted) setLoading(false);
+        setLoading(false);
       }
     };
 
     fetchActivities();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  }, [currentPage, rowsPerPage]);
 
   return (
     <div className="p-8">
@@ -62,15 +67,11 @@ const ActivityPage = () => {
               activities.map((log) => (
                 <tr key={log._id} className="border-t border-gray-200">
                   <Td>{log.userSnapshot?.email || "N/A"}</Td>
-
                   <Td>{formatAction(log.action)}</Td>
-
                   <Td>{log.targetUserSnapshot?.email || "—"}</Td>
-
                   <Td>
                     <StatusBadge status={log.status || "SUCCESS"} />
                   </Td>
-
                   <Td>
                     {log.createdAt
                       ? new Date(log.createdAt).toLocaleString()
@@ -81,6 +82,30 @@ const ActivityPage = () => {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* 🔥 Pagination Controls */}
+      <div className="flex justify-between items-center mt-4">
+        <Button
+          variant="secondary"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+          className=" disabled:opacity-50"
+        >
+          Previous
+        </Button>
+
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <Button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          className="disabled:opacity-50"
+        >
+          Next
+        </Button>
       </div>
     </div>
   );

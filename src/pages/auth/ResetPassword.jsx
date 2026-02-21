@@ -3,8 +3,10 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Input, Button } from "../../components";
 import { resetPassword } from "../../services/auth.service";
 import toast from "react-hot-toast";
+import usePageTitle from "../../utilis/usePageTitle";
 
 const ResetPassword = () => {
+  usePageTitle("Reset Password | User Management ");
   const navigate = useNavigate();
   const location = useLocation();
 

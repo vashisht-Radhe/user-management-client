@@ -5,10 +5,12 @@ import { useAuthForm } from "../../hooks/useAuthForm";
 import { loginSchema } from "../../schemas/auth.schema";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
+import usePageTitle from "../../utilis/usePageTitle";
 
 const loginImage = "/login.webp";
 
 const Login = () => {
+  usePageTitle("Login | User Management");
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();

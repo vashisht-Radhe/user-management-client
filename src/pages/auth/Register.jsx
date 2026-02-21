@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { Input, Button } from "../../components";
+import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import { Button, Input } from "../../components";
+import { useAuth } from "../../context/AuthContext";
 import { useAuthForm } from "../../hooks/useAuthForm";
 import { registerSchema } from "../../schemas/auth.schema";
-import toast from "react-hot-toast";
-import { useAuth } from "../../context/AuthContext";
+import usePageTitle from "../../utilis/usePageTitle";
 
 const loginImage = "/login.webp";
 
 const Register = () => {
+  usePageTitle("Register | User Management");
   const [showPassword, setShowPassword] = useState(false);
   const { registerUser } = useAuth();
   const navigate = useNavigate();

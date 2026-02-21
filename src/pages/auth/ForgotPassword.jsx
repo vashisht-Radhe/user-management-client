@@ -3,8 +3,10 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { Button, Input } from "../../components";
 import { forgotPassword } from "../../services/auth.service";
+import usePageTitle from "../../utilis/usePageTitle";
 
 const ForgotPassword = () => {
+usePageTitle("Forget Password | User Management");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
